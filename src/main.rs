@@ -1,8 +1,11 @@
+mod lib;
+use lib::*;
+
 use clap::{App, Arg};
 use hostname::get_hostname;
-use regex::Regex;
 use std::fs::File;
-use std::io::{self, prelude::*, BufReader};
+use std::io::{self, BufReader, stdout};
+
 
 fn main() -> io::Result<()> {
     let hostname = get_hostname().unwrap();
@@ -39,28 +42,11 @@ fn main() -> io::Result<()> {
     let delimiter = cliargs.value_of("delimiter").unwrap();
     let ident = cliargs.value_of("ident").unwrap();
 
-    // Regex creation
-    let regex_string = format!(r#"^\s*{delimiter}\s*(\S+)?\s*$"#, delimiter = delimiter);
-    let re = Regex::new(&regex_string).unwrap();
+    let discriminer = LineDiscriminer::new(ident, delimiter).unwrap();
+
 
     let file = File::open(filepath)?;
     let bufed_file = BufReader::new(file);
-    let mut print_next = true;
-    for line in bufed_file.lines() {
-        let line = line?;
-        let captures = re.captures(&line);
-        match captures {
-            None => {
-                if print_next {
-                    println!("{}", &line)
-                }
-            }
-            Some(caps) => match caps.get(1) {
-                None => print_next = true,
-                Some(captured_id) => print_next = captured_id.as_str() == ident,
-            },
-        }
-    }
-
-    Ok(())
+    let mut stdout = stdout();
+    discriminer.process(bufed_file, &mut stdout)
 }
