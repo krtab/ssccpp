@@ -195,4 +195,22 @@ mod tests {
         let expected_result = "1\n2\n3\n4\n";
         assert_eq!(expected_result, res_string);
     }
+
+    #[test]
+    fn parsing5() {
+        let content =
+        b"1\n\
+        >>> another, thisone, andanother\n\
+        2\n\
+        >>> other\n\
+        XXX\n\
+        >>>\n\
+        3";
+        let parser = Parser::new("thisone",">>>").unwrap();
+        let mut res : Vec<u8> = Vec::new();
+        parser.process(&content[..], &mut res).unwrap();
+        let res_string = String::from_utf8(res).unwrap();
+        let expected_result = "1\n2\n3\n";
+        assert_eq!(expected_result, res_string);
+    }
 }
