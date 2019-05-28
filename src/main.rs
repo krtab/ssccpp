@@ -1,5 +1,4 @@
-mod lib;
-use lib::*;
+use ssccpp::*;
 
 use clap::{App, Arg};
 use hostname::get_hostname;
