@@ -9,3 +9,4 @@ license = "MIT"
 clap = '2'
 hostname = '*'
 regex = "1"
+walkdir = "2"
