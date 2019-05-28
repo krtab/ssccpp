@@ -42,11 +42,11 @@ fn main() -> io::Result<()> {
     let delimiter = cliargs.value_of("delimiter").unwrap();
     let ident = cliargs.value_of("ident").unwrap();
 
-    let discriminer = LineDiscriminer::new(ident, delimiter).unwrap();
+    let parser = Parser::new(ident, delimiter).unwrap();
 
 
     let file = File::open(filepath)?;
     let bufed_file = BufReader::new(file);
     let mut stdout = stdout();
-    discriminer.process(bufed_file, &mut stdout)
+    parser.process(bufed_file, &mut stdout)
 }
