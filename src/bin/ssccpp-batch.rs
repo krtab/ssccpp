@@ -1,12 +1,13 @@
 use ssccpp::Parser;
+use std::path::PathBuf;
 
 use clap::{App, Arg};
 use hostname::get_hostname;
-use std::fs::File;
-use std::io::{self, BufReader, stdout};
-use walkdir::WalkDir;
-use std::path::Path;
 
+use std::collections::VecDeque;
+use std::fs::{self, OpenOptions};
+use std::io::{self, BufReader};
+use std::path::Path;
 
 fn main() -> io::Result<()> {
     let hostname = get_hostname().unwrap();
@@ -52,14 +53,41 @@ fn main() -> io::Result<()> {
 
     let parser = Parser::new(ident, delimiter).unwrap();
 
-    for entry in WalkDir::new(frompath) {
-        let entry = entry?;
-        let basename = entry.path().strip_prefix(frompath).unwrap();
-        println!("{} -> {} ({})",
-            entry.path().display(),
-            intopath.join(basename).display(),
-            if entry.file_type().is_dir() {"D"} else {"F"}
+    let mut pathqueue: VecDeque<PathBuf> = VecDeque::new();
+    pathqueue.push_back(frompath.to_path_buf());
+    while !pathqueue.is_empty() {
+        let entryfrompath = pathqueue.pop_front().unwrap();
+        let basename = entryfrompath.strip_prefix(frompath).unwrap();
+        let entryisdir = entryfrompath.is_dir();
+        let entryintopath = intopath.join(basename);
+        println!(
+            "{} -> {} ({})",
+            entryfrompath.display(),
+            entryintopath.display(),
+            if entryisdir { "D" } else { "F" }
         );
+        if entryisdir {
+            for subentry in fs::read_dir(entryfrompath)? {
+                pathqueue.push_back(subentry?.path())
+            }
+            {
+                use std::io::ErrorKind;
+                match fs::create_dir(entryintopath) {
+                    Ok(()) => (),
+                    Err(ref e) if e.kind() == ErrorKind::AlreadyExists => (),
+                    err => return err,
+                }
+            }
+        } else {
+            let mut intofile = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open(entryintopath)?;
+            let fromfile = OpenOptions::new().read(true).open(entryfrompath)?;
+            let fromfile = BufReader::new(fromfile);
+            parser.process(fromfile, &mut intofile)?;
+
+        }
     }
     Ok(())
 }
