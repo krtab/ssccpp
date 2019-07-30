@@ -24,6 +24,8 @@ When reaching the *otherwise* block, it will emit the text that follows if none 
 Examples
 --------
 
+### First example
+
 ```
 This line will be displayed everywhere.
 >>>>>>>> foo, bar
@@ -36,4 +38,70 @@ This line will be displayed on foo and zo.
 This line will be displayed on anything that is not foo, bar, ga, bu or zo.
 >>>>>>>>
 This line will be displayed everywhere.
+```
+
+### Configuration files example
+
+In this example, the user has a `dotfiles` directory that mimics the structure of their `/home/user` directory:
+
+```
+dotfiles/
+├── scripts/
+│   └── wallpaper.sh
+└── .xinitrc
+```
+
+The file content is as follow:
+
+**wallpaper.sh**
+
+```
+>>>>>>>> laptop
+feh --bg-scale 'Images/WallpaperLaptop.png'
+>>>>>>>> *
+feh --bg-scale 'Images/DefaultWallpaper.png'
+```
+
+**.xinitrc**
+
+```
+>>>>>>>> desktop
+xrandr --dpi 166
+>>>>>>>> laptop
+xrandr --dpi 96
+>>>>>>>>
+
+exec i3
+```
+
+Upon executing `ssccpp-batch dotfiles/ /home/user --ident laptop` the files will be placed with the same structure in their home directory and become:
+
+**wallpaper.sh**
+
+```
+feh --bg-scale 'Images/WallpaperLaptop.png'
+```
+
+**.xinitrc**
+
+```
+xrandr --dpi 96
+
+exec i3
+```
+
+and upon executing `ssccpp-batch dotfiles/ /home/user --ident desktop` the files will become:
+
+**wallpaper.sh**
+
+```
+feh --bg-scale 'Images/DefaultWallpaper.png'
+```
+
+**.xinitrc**
+
+```
+xrandr --dpi 166
+
+exec i3
 ```
