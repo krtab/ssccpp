@@ -4,8 +4,19 @@ version = "0.1.0"
 authors = ["CARCANO Arthur <arthur.carcano@inria.fr>"]
 edition = "2018"
 license = "MIT"
+description = "SSCCPP, the Simple Switch Cases Configuration PreProcessor"
+
+readme = "Readme.md"
 
 [dependencies]
 clap = '2'
 hostname = '*'
 regex = "1"
+
+[[bin]]
+name = 'ssccpp'
+path = 'src/main.rs'
+
+[[bin]]
+name = 'ssccpp-batch'
+path = 'src/bin/ssccpp-batch.rs'
