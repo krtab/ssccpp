@@ -8,6 +8,7 @@ use std::collections::VecDeque;
 use std::fs::{self, OpenOptions};
 use std::io::{self, BufReader};
 use std::path::Path;
+use std::process;
 
 fn main() -> io::Result<()> {
     let hostname = get_hostname().unwrap();
@@ -47,6 +48,10 @@ fn main() -> io::Result<()> {
     let fromstr = cliargs.value_of("from").unwrap();
     let intostr = cliargs.value_of("into").unwrap();
     let frompath = Path::new(fromstr);
+    if !frompath.exists() {
+        eprintln!("Error: no such 'from' path: {}", frompath.display());
+        process::exit(1)
+    }
     let intopath = Path::new(intostr);
     let delimiter = cliargs.value_of("delimiter").unwrap();
     let ident = cliargs.value_of("ident").unwrap();
@@ -82,6 +87,7 @@ fn main() -> io::Result<()> {
             let mut intofile = OpenOptions::new()
                 .write(true)
                 .create(true)
+                .truncate(true)
                 .open(entryintopath)?;
             let fromfile = OpenOptions::new().read(true).open(entryfrompath)?;
             let fromfile = BufReader::new(fromfile);
