@@ -5,7 +5,7 @@ authors = ["CARCANO Arthur <arthur.carcano@inria.fr>"]
 edition = "2018"
 license = "MIT"
 description = "SSCCPP, the Simple Switch Cases Configuration PreProcessor"
-
+repository = "https://github.com/krtab/ssccpp"
 readme = "Readme.md"
 
 [dependencies]
