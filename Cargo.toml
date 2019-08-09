@@ -10,7 +10,7 @@ readme = "Readme.md"
 
 [dependencies]
 clap = '2'
-hostname = '*'
+hostname = '0.1.5'
 regex = "1"
 
 [[bin]]
