@@ -1,10 +1,20 @@
 SSCCPP, the Simple Switch Cases Configuration PreProcessor
 ==========================================================
 
+[![Build Status](https://travis-ci.org/krtab/ssccpp.svg?branch=master)](https://travis-ci.org/krtab/ssccpp)
+[![Version badge](https://img.shields.io/crates/v/ssccpp.svg)](https://crates.io/crates/ssccpp)
+
 This small utility makes it easy to have a single file that can be adapted to different cases.
-Typical use is to manage dotfiles, by allowing to have only one git branch which is then preprocessed before being used as an actual configuration file.
+
+Typical use is to **manage dotfiles, by allowing to have only one git branch where each file clearly shows its variation between your different machines.**
 
 It is written in Rust and provides a library as well as two binaries: `ssccpp` and `ssccpp-batch`. `ssccpp`  processes a single file while `ssccpp-batch` process all files in a directory, copying its structure to an other one.
+
+### Table of Content
+
+ - [Concept](#concept)
+ - [Examples](#examples)
+ - [Install](#install)
 
 Concept
 --------
@@ -104,4 +114,15 @@ feh --bg-scale 'Images/DefaultWallpaper.png'
 xrandr --dpi 166
 
 exec i3
+```
+
+Install
+-------
+
+### Cargo
+
+Build from the sources using cargo
+
+```bash
+cargo install ssccpp
 ```
